@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>Tests - vueJS</title>
+</head>
+
+<body>
+<div id="app"></div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script>
+    let vm = new Vue({
+        el: "#app",
+        template: `
+        <div>
+                <div class="grid-container">
+                    <button class="negate"> </button>
+
+                    <button class="dot">,</button>
+                    <button class="equal" v-on:click="result"><span>&#61;</span></button>
+
+                    <button class="plus" id="bCinza" v-on:click="setOperator('+')"><span>&#43;</span></button>
+                    <button class="minus" id="bCinza" v-on:click="setOperator('−')"><span>&#8722;</span></button>
+                    <button class="multiply" id="bCinza" v-on:click="setOperator('×')"><span>&#215;</span></button>
+                    <button class="division" id="bCinza" v-on:click="setOperator('÷')"><span>&#247;</span></button>
+
+                    <button class="zero" id="zeron" v-on:click="addN('0')" >0</button>
+                    <button class="one" id="onen" v-on:click="addN('1')" >1</button>
+                    <button class="two" id="twon" v-on:click="addN('2')" >2</button>
+                    <button class="three" id="threen" v-on:click="addN('3')">3</button>
+                    <button class="four" id="fourn" v-on:click="addN('4')">4</button>
+                    <button class="five" id="fiven" v-on:click="addN('5')">5</button>
+                    <button class="six" id="sixn" v-on:click="addN('6')">6</button>
+                    <button class="seven" id="sevenn" v-on:click="addN('7')">7</button>
+                    <button class="eight" id="eightn" v-on:click="addN('8')">8</button>
+                    <button class="nine" id="ninen" v-on:click="addN('9')">9</button>
+
+                    <button class="clear" id="bCinza" v-on:click="clear">C</button>
+                    <button class="clearALL" id="bCinza" v-on:click="clearALL">CE</button>
+                    <button class="remove" id="bCinza" v-on:click="remover">←</button>
+
+                    <div class="display">{{displayValue}}</div>
+                    <div class="subDisplay">{{subValue}} {{operator}}</div>
+                </div>
+            <div class="footer">
+                <p>Feito por: Raul César</p>
+            </div>
+        </div>
+        `,
+        data(){
+            return{
+                displayValue: '0',
+                subValue: '',
+                operator: ''
+            }
+        },
+        methods: {
+            addN(n){
+                if(this.displayValue==="0"){
+                    /* if(n==='0'){
+                        this.displayValue+=n
+                        return
+                    } */
+                    this.displayValue=n
+                    return;
+                }
+                if(this.displayValue.length===16){
+                    return;
+                }
+                this.displayValue+=n
+            },
+            clear(){
+                if(this.operator && this.subValue){
+                    vm.clearALL()
+                }
+                this.displayValue='0';
+            },
+            clearALL(){
+                this.displayValue='0';
+                this.subValue='';
+                this.operator='';
+            },
+            remover(){
+                if(this.displayValue.length===1) {
+                    this.displayValue='0';
+                    return
+                }
+                this.displayValue=this.displayValue.slice(0, this.displayValue.length-1)
+            },
+            setOperator(p){
+                if(this.subValue) {
+                    this.operator=p;
+                    return;
+                }
+                this.subValue=this.displayValue
+                this.operator=p
+
+                this.displayValue='0'
+            },
+            result(){
+                let res;
+                let disp=parseFloat(this.displayValue, 10)
+                let sub=parseFloat(this.subValue, 10)
+                switch(this.operator){
+                    case '+':
+                        res=sub+disp
+                        this.displayValue=res;
+                        break;
+                    case '−':
+                        res=sub-disp
+                        this.displayValue=res;
+                        break;
+                    case '÷':
+                        res=sub/disp
+                        this.displayValue=res;
+                        break;
+                    case '×':
+                        res=sub*disp
+                        this.displayValue=res;
+                        break;
+                }
+            }
+        },
+        mounted(){
+            document.addEventListener('keydown', keyPush)
+            function keyPush(evt){
+                //console.log(evt.key)
+                switch(evt.key){
+                    case 'Enter':
+                        evt.preventDefault();
+                        vm.result()
+                        break;
+                    case '=':
+                        evt.preventDefault();
+                        vm.result();
+                        break;
+                    case '/':
+                        evt.preventDefault();
+                        vm.setOperator('÷');
+                        break;
+                    case '-':
+                        evt.preventDefault();
+                        vm.setOperator('−');
+                        break;
+                    case '+':
+                        evt.preventDefault();
+                        vm.setOperator('+');
+                        break;
+                    case '*':
+                        evt.preventDefault();
+                        vm.setOperator('×');
+                        break;
+                    case 'Backspace':
+                        vm.remover()
+                        break;
+                    case '1':
+                        document.getElementById('onen').click();
+                        break;
+                    case '2':
+                        document.getElementById('twon').click();
+                        break;
+                    case '3':
+                        document.getElementById('threen').click();
+                        break;  
+                    case '4':
+                        document.getElementById('fourn').click();
+                        break;  
+                    case '5':
+                        document.getElementById('fiven').click();
+                        break;
+                    case '6':
+                        document.getElementById('sixn').click(); 
+                        break;
+                    case '7':
+                        document.getElementById('sevenn').click();
+                        break;  
+                    case '8':
+                        document.getElementById('eightn').click();   
+                        break;  
+                    case '9':
+                        document.getElementById('ninen').click();   
+                        break;  
+                    case '0':
+                        document.getElementById('zeron').click();   
+                        break;
+                    default:
+                        return
+                        break;                   
+                }
+            }
+        }
+    })
+</script>
+</body>
+
+</html>
